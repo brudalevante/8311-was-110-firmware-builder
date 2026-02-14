@@ -135,6 +135,27 @@ if ls packages/common/*.ipk &>/dev/null; then
 	done
 fi
 
+# 8311 MOD: Configure opkg for package installation
+mkdir -p "$ROOT_DIR/etc/opkg"
+cat > "$ROOT_DIR/etc/opkg/distfeeds.conf" <<'OPKG_FEEDS'
+# OpenWrt package feeds for mips_24kc
+src/gz openwrt_core https://downloads.openwrt.org/releases/21.02.3/targets/lantiq/xrx200/packages
+src/gz openwrt_base https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/base
+src/gz openwrt_luci https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/luci
+src/gz openwrt_packages https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/packages
+src/gz openwrt_routing https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/routing
+src/gz openwrt_telephony https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/telephony
+OPKG_FEEDS
+
+# Ensure opkg.conf permits overlay
+cat > "$ROOT_DIR/etc/opkg.conf" <<'OPKG_CONF'
+dest root /
+dest ram /tmp
+lists_dir ext /var/opkg-lists
+option overlay_root /overlay
+option check_signature 0
+OPKG_CONF
+
 DROPBEAR="$ROOT_DIR/etc/init.d/dropbear"
 # Fix dropbear init script from newer OpenWRT
 sed -r 's/^extra_command "killclients" .+$/EXTRA_COMMANDS="killclients"\nEXTRA_HELP="    killclients Kill ${NAME} processes except servers and yourself"/' -i "$DROPBEAR"

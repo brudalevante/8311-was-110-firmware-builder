@@ -45,7 +45,12 @@ start() {
 
 	# fwenv for setting the root account password hash
 	ROOT_PWHASH=$(get_8311_root_pwhash)
-	[ -n "$ROOT_PWHASH" ] && set_8311_root_pwhash "$ROOT_PWHASH"
+	if [ -n "$ROOT_PWHASH" ]; then
+		set_8311_root_pwhash "$ROOT_PWHASH"
+	else
+		# 8311 MOD: Allow SSH without password if no hash configured
+		passwd -d root 2>/dev/null || true
+	fi
 }
 
 boot() {

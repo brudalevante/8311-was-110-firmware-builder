@@ -137,6 +137,39 @@ Previous UCI settings will be automatically migrated.
 The current root password (change with `passwd`) can be persisted using the `8311-persist-root-password.sh` command
 
 
+### SSH Without Password
+
+By default, this image allows SSH access without a password to the root user. You can establish a password after the first access:
+
+```bash
+ssh root@192.168.11.1
+passwd  # Set new password
+8311-persist-root-password.sh  # Make it persistent
+```
+
+Note: If you set the `8311_root_pwhash` fwenv variable, password authentication will be enforced.
+
+
+## Package Installation
+
+This image includes full opkg support for installing additional packages:
+
+```bash
+opkg update
+opkg install <package-name>
+```
+
+The following package feeds are pre-configured for OpenWrt 21.02.3:
+- Core packages
+- Base packages
+- LuCI packages
+- Community packages
+- Routing packages
+- Telephony packages
+
+Note: Packages are installed to the overlay filesystem, so they will persist across reboots when `8311_persist_root=1` is set.
+
+
 
 ## Scripts
 
