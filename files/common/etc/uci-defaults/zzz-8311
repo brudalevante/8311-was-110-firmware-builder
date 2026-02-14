@@ -87,12 +87,16 @@ if [ -f "/usr/sbin/dropbear" ]; then
 
 	uci batch <<BATCH
 add dropbear dropbear
-set dropbear.@dropbear[0].PasswordAuth='on'
-set dropbear.@dropbear[0].RootPasswordAuth='on'
+set dropbear.@dropbear[0].PasswordAuth='off'
+set dropbear.@dropbear[0].RootPasswordAuth='off'
+set dropbear.@dropbear[0].RootLogin='1'
 set dropbear.@dropbear[0].Port='22'
 set dropbear.@dropbear[0].DirectInterface='$DB_INT'
 commit dropbear
 BATCH
+
+	# 8311 MOD: Allow root SSH without password
+	passwd -d root 2>/dev/null || true
 fi
 
 uci set "sfp_eeprom.factory_bridge.enable"="0"

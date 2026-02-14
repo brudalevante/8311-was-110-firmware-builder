@@ -1,4 +1,9 @@
 #!/bin/bash
+# OpenWrt package repository configuration
+OPENWRT_VERSION="21.02.3"
+OPENWRT_ARCH="mips_24kc"
+OPENWRT_TARGET="lantiq/xrx200"
+
 BANNER="$ROOT_DIR/etc/banner"
 sed -E "s#(^\s+OpenWrt\s+.+$)#\1\n\n 8311 Community Firmware MOD [$FW_VARIANT] - $FW_VERSION ($FW_REVISION)\n https://github.com/djGrrr/8311-was-110-firmware-builder#g" -i "$BANNER"
 
@@ -134,6 +139,27 @@ if ls packages/common/*.ipk &>/dev/null; then
 		tar xfz "$IPK" -O -- "./data.tar.gz" | tar xvz -C "$ROOT_DIR/"
 	done
 fi
+
+# 8311 MOD: Configure opkg for package installation
+mkdir -p "$ROOT_DIR/etc/opkg"
+cat > "$ROOT_DIR/etc/opkg/distfeeds.conf" <<OPKG_FEEDS
+# OpenWrt package feeds for ${OPENWRT_ARCH}
+src/gz openwrt_core https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/${OPENWRT_TARGET}/packages
+src/gz openwrt_base https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/base
+src/gz openwrt_luci https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/luci
+src/gz openwrt_packages https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/packages
+src/gz openwrt_routing https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/routing
+src/gz openwrt_telephony https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/telephony
+OPKG_FEEDS
+
+# Ensure opkg.conf permits overlay
+cat > "$ROOT_DIR/etc/opkg.conf" <<'OPKG_CONF'
+dest root /
+dest ram /tmp
+lists_dir ext /var/opkg-lists
+option overlay_root /overlay
+option check_signature 0
+OPKG_CONF
 
 DROPBEAR="$ROOT_DIR/etc/init.d/dropbear"
 # Fix dropbear init script from newer OpenWRT

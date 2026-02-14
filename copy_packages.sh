@@ -12,6 +12,7 @@ COMMON_PACKAGES=(
 	"mtr"
 	"nand-utils"
 	"nano"
+	"opkg"
 	"terminfo"
 	"zoneinfo-[a-z]+"
 	"zstd"
