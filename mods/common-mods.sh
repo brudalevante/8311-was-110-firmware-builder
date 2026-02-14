@@ -1,4 +1,9 @@
 #!/bin/bash
+# OpenWrt package repository configuration
+OPENWRT_VERSION="21.02.3"
+OPENWRT_ARCH="mips_24kc"
+OPENWRT_TARGET="lantiq/xrx200"
+
 BANNER="$ROOT_DIR/etc/banner"
 sed -E "s#(^\s+OpenWrt\s+.+$)#\1\n\n 8311 Community Firmware MOD [$FW_VARIANT] - $FW_VERSION ($FW_REVISION)\n https://github.com/djGrrr/8311-was-110-firmware-builder#g" -i "$BANNER"
 
@@ -137,14 +142,14 @@ fi
 
 # 8311 MOD: Configure opkg for package installation
 mkdir -p "$ROOT_DIR/etc/opkg"
-cat > "$ROOT_DIR/etc/opkg/distfeeds.conf" <<'OPKG_FEEDS'
-# OpenWrt package feeds for mips_24kc
-src/gz openwrt_core https://downloads.openwrt.org/releases/21.02.3/targets/lantiq/xrx200/packages
-src/gz openwrt_base https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/base
-src/gz openwrt_luci https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/luci
-src/gz openwrt_packages https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/packages
-src/gz openwrt_routing https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/routing
-src/gz openwrt_telephony https://downloads.openwrt.org/releases/21.02.3/packages/mips_24kc/telephony
+cat > "$ROOT_DIR/etc/opkg/distfeeds.conf" <<OPKG_FEEDS
+# OpenWrt package feeds for ${OPENWRT_ARCH}
+src/gz openwrt_core https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/${OPENWRT_TARGET}/packages
+src/gz openwrt_base https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/base
+src/gz openwrt_luci https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/luci
+src/gz openwrt_packages https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/packages
+src/gz openwrt_routing https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/routing
+src/gz openwrt_telephony https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/packages/${OPENWRT_ARCH}/telephony
 OPKG_FEEDS
 
 # Ensure opkg.conf permits overlay

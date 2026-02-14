@@ -167,7 +167,7 @@ The following package feeds are pre-configured for OpenWrt 21.02.3:
 - Routing packages
 - Telephony packages
 
-Note: Packages are installed to the overlay filesystem, so they will persist across reboots when `8311_persist_root=1` is set.
+Note: Packages are installed to the overlay filesystem, so they will persist across reboots when `8311_persist_root=1` is set (see the `8311_persist_root` fwenv in the Management section above).
 
 
 
